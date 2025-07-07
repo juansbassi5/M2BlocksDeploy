@@ -1,0 +1,407 @@
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 0;
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: black;
+}
+
+.header {
+  border-bottom: 1px solid lightgray;
+  display: flex;
+  align-items: center;
+  justify-content:flex-start;
+  width: 100%;
+}
+
+.score {
+  margin: 10px;
+  left: 10px;
+  font-size: 25px;
+  color: white;
+}
+
+.board {
+  margin: 7px;
+  position: relative;
+}
+
+.blocks {
+  position: relative;
+  display: grid;
+  row-gap: 5px;
+  column-gap: 5px;
+  border-radius: 5px;
+}
+
+.block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-size: 25px;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 70px;
+  height: 70px;
+  z-index: 2;
+}
+
+.lane {
+  border-radius: 5px;
+  cursor: pointer;
+  background: rgb(28 28 30);
+  z-index: 1;
+}
+
+.lane:hover {
+  background: rgb(50, 50, 54);
+}
+
+.footer {
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid lightgray;
+  padding: 5px;
+}
+
+.blockShoot {
+  position: relative;
+  display: inline-block;
+}
+
+.next-block {
+  position: absolute;
+  top: 5px;
+  right: -70px;
+  transform: scale(0.7);
+  opacity: 0.8;
+  pointer-events: none;
+  transition: transform 0.3s ease-in-out, right 0.3s ease-in-out;
+}
+
+.next-block.slide-to-left {
+  right: 0px;
+  transform: scale(1);
+}
+
+.next-block-wrapper {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  cursor: pointer;
+}
+
+.overlay {
+  pointer-events: auto;
+  width: 100%;
+  height: 100%;
+  background: rgba(30, 30, 30, 0.9);
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  text-align: center;
+  padding: 5px;
+  z-index: 10;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  margin-top: 6px;
+  overflow: hidden;
+  z-index: 14;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: rgb(36, 153, 220);
+  transition: width 0.1s linear;
+  border-radius: 3px 0 0 3px;
+}
+
+.max-message {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #00ffff;
+  padding: 40px 40px;
+  border-radius: 12px;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: 0 0 12px rgba(0,0,0,0.4);
+  z-index: 1000;
+  animation: fadein 0.3s ease-in-out;
+  opacity: 0.7;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateX(-50%) scale(0.9); }
+  to   { opacity: 0.7; transform: translateX(-50%) scale(1); }
+}
+
+/* --- ESTILOS DE NOTIFICACIÓN REVISADOS --- */
+
+/* Estilo base para todas las "burbujas" de notificación */
+.notification-bubble {
+  padding: 1rem 2rem;
+  border-radius: 2rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: bounceFade 5s ease-in-out forwards;
+  white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+  color: #fff; /* Color de texto por defecto para todas, se puede sobreescribir */
+}
+
+/* 1. Contenedor para Notificaciones Centrales */
+.notification-container {
+  position: fixed; /* Posicionado con respecto al viewport */
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%); /* Centra el contenedor horizontalmente */
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra las burbujas dentro del contenedor */
+  gap: 1rem; /* Espacio entre burbujas */
+}
+
+/* Color específico para notificaciones centrales (las que no son Combo, Good, Excellent) */
+.notification-container .notification-bubble {
+  background: linear-gradient(135deg, #0886e7, #0066ff); /* Azul */
+  color: #222; /* Color de texto para el centro, si es diferente */
+}
+
+/* 2. Contenedor para Notificaciones Izquierdas (Good, Excellent) */
+.left-notifications-wrapper {
+  position: fixed;
+  top: 2rem; /* Alineado verticalmente con el centro y la derecha */
+  left: 10rem; /* Distancia del borde izquierdo (ajusta a tu gusto) */
+  z-index: 150; /* Z-index más alto que el central */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Alinea las burbujas a la izquierda dentro del wrapper */
+  gap: 1rem; /* Espacio entre burbujas */
+}
+
+/* Colores específicos para notificaciones Good y Excellent */
+.good-notification-bubble {
+  background: linear-gradient(135deg, #28a745, #218838); /* Verde */
+}
+
+.excellent-notification-bubble {
+  background: linear-gradient(135deg, #ffd700, #ffb400); /* Dorado */
+  color: #000; /* Color de texto negro para el dorado */
+}
+
+/* 3. Contenedor para Notificaciones Derechas (Combo) */
+.right-notifications-wrapper {
+  position: fixed;
+  top: 2rem; /* Alineado verticalmente con el centro y la izquierda */
+  right: 10rem; /* Distancia del borde derecho (ajusta a tu gusto) */
+  z-index: 150; /* Z-index más alto que el central */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Alinea las burbujas a la derecha dentro del wrapper */
+  gap: 1rem; /* Espacio entre burbujas */
+}
+
+/* Color específico para notificación Combo */
+.combo-notification-bubble {
+  background: linear-gradient(135deg, #e1ee2a, #0c5216); /* Amarillo/Verde */
+}
+
+@keyframes bounceFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0) scale(1.05);
+  }
+  20% {
+    transform: scale(1);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+    /* NO usar display: none aquí si quieres que JS lo elimine del DOM */
+  }
+}
+
+/* ========== Game Over Overlay ========== */
+
+.gameover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.gameover-content {
+  text-align: center;
+  background: #111;
+  padding: 2rem 3rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+.gameover-content h1 {
+  margin: 0 0 1rem;
+  color: #f00;
+  font-size: 3rem;
+  text-shadow: 0 0 8px #f00;
+}
+
+.gameover-content button {
+  background: #f00;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.gameover-content button:hover {
+  background: #c00;
+}
+
+/* Posicionamiento para el nuevo contenedor de notificaciones de bloques eliminados */
+.left-down-notifications-wrapper {
+    position: absolute;
+    bottom: 20px; /* Ajusta la distancia desde abajo */
+    left: 20px; /* Ajusta la distancia desde la izquierda */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Alinea las burbujas a la izquierda */
+    gap: 10px; /* Espacio entre las notificaciones */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    pointer-events: none; /* Permite clics a través de ellas si no son interactivas */
+}
+
+/* Estilos específicos para la burbuja de notificación de tipo 'eliminated' */
+.notification-bubble.eliminated-notification-bubble {
+    background-color: #e74c3c; /* Un rojo vibrante */
+    color: white; /* Texto blanco */
+    border: 2px solid #c0392b; /* Borde un poco más oscuro */
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.1em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Puedes añadir animaciones aquí si lo deseas */
+    opacity: 0; /* Para animaciones de entrada */
+    transform: translateX(-20px); /* Para animaciones de entrada */
+    animation: fadeInSlideRight 0.5s forwards; /* Animación de entrada */
+}
+
+/* Opcional: Animaciones de entrada/salida para las burbujas */
+@keyframes fadeInSlideRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Si quieres una animación de salida, necesitarías más lógica en React para añadir una clase */
+/* Por ejemplo, en tu función pushNotification, podrías añadir un estado 'fadingOut' a la notificación */
+/* y luego en el CSS: */
+/*
+.notification-bubble.fade-out {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+*/
+.combo-banner {
+  background: linear-gradient(135deg, #ffeb3b, #ffc107);
+  color: #000;
+  padding: 8px 16px;
+  margin-left: 50px;
+  right: 1rem;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 1rem;
+  animation: comboPulse 0.4s ease-in-out;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes comboPulse {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Styles for Board.tsx (if you choose to show tooltip per lane) */
+.lane.hovered {
+    background-color: rgba(255, 255, 255, 0.1); /* Resalta el carril al hacer hover */
+}
+
+.predicted-combo-tooltip {
+    position: absolute;
+    bottom: 10px; /* Ajusta la posición del tooltip */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4CAF50; /* Un color verde para el combo */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    white-space: nowrap;
+    z-index: 5;
+    pointer-events: none; /* Permite hacer clic a través del tooltip */
+}
+
+
+
+.hint-toggle-btn {
+  position: absolute;
+  left: -110px;
+  top: 30%;
+  background-color: #555;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.1s ease-in-out;
+}
+
+.hint-toggle-btn:hover {
+  background-color: #777;
+}
